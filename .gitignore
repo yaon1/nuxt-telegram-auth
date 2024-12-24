@@ -4,3 +4,5 @@ dist/
 .output/
 playground/.nuxt/
 .env
+playground/.env
+playground/.output/
