@@ -1,13 +1,36 @@
 # nuxt-telegram-auth
 
-Telegram Login for **Nuxt 4** (and 3.16+). Drop in a button, get a verified user in a sealed cookie session.
+**Вход через Telegram для Nuxt 4 (и 3.16+) за пять минут, без своей БД и OAuth-сервера.** Кладёте кнопку, а на сервере получаете проверенного пользователя в зашифрованной cookie-сессии. Подпись Telegram проверяется на сервере, поэтому подделать вход, отредактировав данные в браузере, нельзя.
 
-- `<TelegramLoginButton>`: the official Login Widget as a component
-- Server-side signature and freshness check on **Web Crypto**, so it works on Node, Bun, Deno, Cloudflare and Vercel Edge
-- Encrypted, `httpOnly` cookie session, no database required
-- `useTelegramAuth()` on the client, `requireTelegramUser(event)` on the server (both auto-imported)
+- `<TelegramLoginButton>`: официальный Login Widget в виде компонента.
+- Проверка подписи и «свежести» на **Web Crypto**: работает в Node, Bun, Deno, Cloudflare и Vercel Edge.
+- Зашифрованная `httpOnly`-cookie, база данных не нужна.
+- `useTelegramAuth()` на клиенте и `requireTelegramUser(event)` на сервере, оба импортируются автоматически.
 
-## Setup
+## Пример использования
+
+```vue
+<!-- app/pages/index.vue -->
+<script setup lang="ts">
+const { user, loggedIn, fetchSession, logout } = useTelegramAuth()
+await fetchSession() // работает и при SSR
+</script>
+
+<template>
+  <p v-if="loggedIn">Привет, {{ user.first_name }}! <button @click="logout">Выйти</button></p>
+  <TelegramLoginButton v-else :corner-radius="8" request-access />
+</template>
+```
+
+```ts
+// server/api/orders.get.ts
+export default defineEventHandler(async (event) => {
+  const user = await requireTelegramUser(event) // 401, если не залогинен
+  return getOrdersFor(user.id)
+})
+```
+
+## Установка
 
 ```bash
 npm i nuxt-telegram-auth
@@ -24,45 +47,23 @@ export default defineNuxtConfig({
 ```bash
 # .env
 NUXT_TELEGRAM_AUTH_BOT_TOKEN=123456:ABC...
-NUXT_TELEGRAM_AUTH_SESSION_PASSWORD=a-random-string-of-at-least-32-chars
+NUXT_TELEGRAM_AUTH_SESSION_PASSWORD=случайная-строка-минимум-32-символа
 ```
 
-In @BotFather run `/setdomain` and set your site's domain, otherwise the widget won't render.
+В @BotFather выполните `/setdomain` и укажите домен сайта, иначе виджет не отрисуется.
 
-## Usage
+## Опции
 
-```vue
-<script setup lang="ts">
-const { user, loggedIn, fetchSession, logout } = useTelegramAuth()
-await fetchSession() // SSR-safe: forwards the cookie on the server
-</script>
-
-<template>
-  <p v-if="loggedIn">Hi, {{ user.first_name }} <button @click="logout">Log out</button></p>
-  <TelegramLoginButton v-else :corner-radius="8" request-access @login="(u) => console.log(u)" />
-</template>
-```
-
-```ts
-// server/api/orders.get.ts
-export default defineEventHandler(async (event) => {
-  const user = await requireTelegramUser(event) // 401 if not logged in
-  return getOrdersFor(user.id)
-})
-```
-
-## Options
-
-| Option | Default | |
+| Опция | По умолчанию | |
 |---|---|---|
-| `botUsername` | — | Bot username without `@` |
-| `botToken` | — | Better set via `NUXT_TELEGRAM_AUTH_BOT_TOKEN` |
-| `sessionPassword` | — | ≥ 32 chars, via `NUXT_TELEGRAM_AUTH_SESSION_PASSWORD` |
-| `authMaxAge` | `86400` | Reject widget payloads older than this (seconds) |
-| `sessionMaxAge` | `2592000` | Cookie lifetime (seconds) |
-| `apiBase` | `/api/_auth/telegram` | Prefix for `login`, `session`, `logout` routes |
+| `botUsername` | — | Имя бота без `@` |
+| `botToken` | — | Лучше через `NUXT_TELEGRAM_AUTH_BOT_TOKEN` |
+| `sessionPassword` | — | Не короче 32 символов, через `NUXT_TELEGRAM_AUTH_SESSION_PASSWORD` |
+| `authMaxAge` | `86400` | Отклонять данные виджета старше N секунд |
+| `sessionMaxAge` | `2592000` | Срок жизни cookie, секунды |
+| `apiBase` | `/api/_auth/telegram` | Префикс для маршрутов `login`, `session`, `logout` |
 
-## Development
+## Разработка
 
 ```bash
 npm i
@@ -72,6 +73,6 @@ npm run dev
 npm test
 ```
 
-## License
+## Лицензия
 
 MIT
