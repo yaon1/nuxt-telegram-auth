@@ -1,3 +1,5 @@
+import { constantTimeEqual, dataCheckString, hmacSha256, sha256, toHex } from './crypto'
+
 export interface TelegramUser {
   id: number
   first_name: string
@@ -8,19 +10,6 @@ export interface TelegramUser {
 }
 
 export type VerifyResult = { ok: true; user: TelegramUser } | { ok: false; reason: 'malformed' | 'signature' | 'expired' }
-
-const encoder = new TextEncoder()
-
-function toHex(buffer: ArrayBuffer): string {
-  return Array.from(new Uint8Array(buffer), (b) => b.toString(16).padStart(2, '0')).join('')
-}
-
-function constantTimeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false
-  let diff = 0
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i)
-  return diff === 0
-}
 
 /**
  * Verifies Login Widget data as described in https://core.telegram.org/widgets/login#checking-authorization.
@@ -37,15 +26,7 @@ export async function verifyTelegramLogin(
     return { ok: false, reason: 'malformed' }
   }
 
-  const checkString = Object.keys(fields)
-    .filter((k) => fields[k] !== undefined && fields[k] !== null)
-    .sort()
-    .map((k) => `${k}=${fields[k]}`)
-    .join('\n')
-
-  const secret = await crypto.subtle.digest('SHA-256', encoder.encode(botToken))
-  const key = await crypto.subtle.importKey('raw', secret, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
-  const signature = toHex(await crypto.subtle.sign('HMAC', key, encoder.encode(checkString)))
+  const signature = toHex(await hmacSha256(await sha256(botToken), dataCheckString(fields)))
 
   if (!constantTimeEqual(signature, hash.toLowerCase())) return { ok: false, reason: 'signature' }
 
