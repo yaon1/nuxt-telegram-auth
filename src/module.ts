@@ -45,7 +45,7 @@ export default defineNuxtModule<ModuleOptions>({
       logger.warn('`telegramAuth.botUsername` is empty; the login widget will not render.')
     }
 
-    for (const [route, method] of [['login', 'post'], ['session', 'get'], ['logout', 'post']] as const) {
+    for (const [route, method] of [['login', 'post'], ['webapp', 'post'], ['session', 'get'], ['logout', 'post']] as const) {
       addServerHandler({ route: `${options.apiBase}/${route}`, method, handler: resolve(`./runtime/server/api/${route}.${method}`) })
     }
 
@@ -53,6 +53,7 @@ export default defineNuxtModule<ModuleOptions>({
       { name: 'requireTelegramUser', from: resolve('./runtime/server/utils/session') },
       { name: 'getTelegramUser', from: resolve('./runtime/server/utils/session') },
       { name: 'verifyTelegramLogin', from: resolve('./runtime/server/utils/verify') },
+      { name: 'verifyWebAppInitData', from: resolve('./runtime/server/utils/webapp') },
     ])
     addImports({ name: 'useTelegramAuth', from: resolve('./runtime/composables/useTelegramAuth') })
     addComponent({ name: 'TelegramLoginButton', filePath: resolve('./runtime/components/TelegramLoginButton.vue') })
