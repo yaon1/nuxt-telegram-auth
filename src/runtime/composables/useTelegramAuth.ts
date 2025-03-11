@@ -17,10 +17,15 @@ export function useTelegramAuth() {
     return user.value
   }
 
+  async function loginWithWebApp(initData: string): Promise<TelegramUser> {
+    user.value = await $fetch<TelegramUser>(`${apiBase}/webapp`, { method: 'POST', body: { initData } })
+    return user.value
+  }
+
   async function logout(): Promise<void> {
     await $fetch(`${apiBase}/logout`, { method: 'POST' })
     user.value = null
   }
 
-  return { user, loggedIn: computed(() => user.value !== null), fetchSession, login, logout }
+  return { user, loggedIn: computed(() => user.value !== null), fetchSession, login, loginWithWebApp, logout }
 }

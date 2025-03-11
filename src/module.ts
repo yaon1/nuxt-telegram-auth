@@ -55,7 +55,10 @@ export default defineNuxtModule<ModuleOptions>({
       { name: 'verifyTelegramLogin', from: resolve('./runtime/server/utils/verify') },
       { name: 'verifyWebAppInitData', from: resolve('./runtime/server/utils/webapp') },
     ])
-    addImports({ name: 'useTelegramAuth', from: resolve('./runtime/composables/useTelegramAuth') })
+    addImports([
+      { name: 'useTelegramAuth', from: resolve('./runtime/composables/useTelegramAuth') },
+      { name: 'useTelegramWebApp', from: resolve('./runtime/composables/useTelegramWebApp') },
+    ])
     addComponent({ name: 'TelegramLoginButton', filePath: resolve('./runtime/components/TelegramLoginButton.vue') })
   },
 })
