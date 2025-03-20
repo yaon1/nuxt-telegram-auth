@@ -14,6 +14,8 @@ export interface ModuleOptions {
   sessionMaxAge: number
   /** Prefix for the server routes. */
   apiBase: string
+  /** Load telegram-web-app.js in <head> so `useTelegramWebApp()` works inside Mini Apps. */
+  webApp: boolean
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -25,6 +27,7 @@ export default defineNuxtModule<ModuleOptions>({
     authMaxAge: 86_400,
     sessionMaxAge: 60 * 60 * 24 * 30,
     apiBase: '/api/_auth/telegram',
+    webApp: false,
   },
   setup(options, nuxt) {
     const { resolve } = createResolver(import.meta.url)
@@ -40,6 +43,11 @@ export default defineNuxtModule<ModuleOptions>({
       botUsername: options.botUsername,
       apiBase: options.apiBase,
     })
+
+    if (options.webApp) {
+      nuxt.options.app.head.script ||= []
+      nuxt.options.app.head.script.push({ src: 'https://telegram.org/js/telegram-web-app.js', tagPriority: 'critical' })
+    }
 
     if (!options.botUsername && !nuxt.options._prepare) {
       logger.warn('`telegramAuth.botUsername` is empty; the login widget will not render.')
