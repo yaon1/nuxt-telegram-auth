@@ -1,4 +1,4 @@
-import { addComponent, addImports, addServerHandler, addServerImports, createResolver, defineNuxtModule, useLogger } from '@nuxt/kit'
+import { addComponent, addImports, addRouteMiddleware, addServerHandler, addServerImports, createResolver, defineNuxtModule, useLogger } from '@nuxt/kit'
 import { defu } from 'defu'
 
 export interface ModuleOptions {
@@ -16,6 +16,8 @@ export interface ModuleOptions {
   apiBase: string
   /** Load telegram-web-app.js in <head> so `useTelegramWebApp()` works inside Mini Apps. */
   webApp: boolean
+  /** Where the `telegram-auth` middleware sends visitors who are not logged in. */
+  redirectTo: string
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -28,6 +30,7 @@ export default defineNuxtModule<ModuleOptions>({
     sessionMaxAge: 60 * 60 * 24 * 30,
     apiBase: '/api/_auth/telegram',
     webApp: false,
+    redirectTo: '/login',
   },
   setup(options, nuxt) {
     const { resolve } = createResolver(import.meta.url)
@@ -42,6 +45,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.runtimeConfig.public.telegramAuth = defu(nuxt.options.runtimeConfig.public.telegramAuth, {
       botUsername: options.botUsername,
       apiBase: options.apiBase,
+      redirectTo: options.redirectTo,
     })
 
     if (options.webApp) {
@@ -67,6 +71,7 @@ export default defineNuxtModule<ModuleOptions>({
       { name: 'useTelegramAuth', from: resolve('./runtime/composables/useTelegramAuth') },
       { name: 'useTelegramWebApp', from: resolve('./runtime/composables/useTelegramWebApp') },
     ])
+    addRouteMiddleware({ name: 'telegram-auth', path: resolve('./runtime/middleware/telegram-auth') })
     addComponent({ name: 'TelegramLoginButton', filePath: resolve('./runtime/components/TelegramLoginButton.vue') })
   },
 })
@@ -76,6 +81,6 @@ declare module '@nuxt/schema' {
     telegramAuth: Pick<ModuleOptions, 'botToken' | 'sessionPassword' | 'authMaxAge' | 'sessionMaxAge'>
   }
   interface PublicRuntimeConfig {
-    telegramAuth: Pick<ModuleOptions, 'botUsername' | 'apiBase'>
+    telegramAuth: Pick<ModuleOptions, 'botUsername' | 'apiBase' | 'redirectTo'>
   }
 }
