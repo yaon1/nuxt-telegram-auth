@@ -57,7 +57,7 @@ export default defineNuxtModule<ModuleOptions>({
       logger.warn('`telegramAuth.botUsername` is empty; the login widget will not render.')
     }
 
-    for (const [route, method] of [['login', 'post'], ['webapp', 'post'], ['session', 'get'], ['logout', 'post']] as const) {
+    for (const [route, method] of [['login', 'post'], ['webapp', 'post'], ['callback', 'get'], ['session', 'get'], ['logout', 'post']] as const) {
       addServerHandler({ route: `${options.apiBase}/${route}`, method, handler: resolve(`./runtime/server/api/${route}.${method}`) })
     }
 

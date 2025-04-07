@@ -11,12 +11,16 @@ const props = withDefaults(
     showAvatar?: boolean
     requestAccess?: boolean
     lang?: string
+    /** 'redirect' sends the browser to the callback route instead of using a JS callback. */
+    mode?: 'callback' | 'redirect'
+    /** Where to land after a redirect-mode login. */
+    redirectTo?: string
   }>(),
-  { size: 'large', cornerRadius: undefined, showAvatar: true, requestAccess: false, lang: undefined },
+  { size: 'large', cornerRadius: undefined, showAvatar: true, requestAccess: false, lang: undefined, mode: 'callback', redirectTo: '/' },
 )
 const emit = defineEmits<{ login: [user: TelegramUser]; error: [error: unknown] }>()
 
-const { botUsername } = useRuntimeConfig().public.telegramAuth
+const { botUsername, apiBase } = useRuntimeConfig().public.telegramAuth
 const { login } = useTelegramAuth()
 const container = ref<HTMLElement>()
 // The widget calls a global function by name, so each instance registers a unique one.
@@ -37,7 +41,11 @@ onMounted(() => {
   script.dataset.telegramLogin = botUsername
   script.dataset.size = props.size
   script.dataset.userpic = String(props.showAvatar)
-  script.dataset.onauth = `${callback}(user)`
+  if (props.mode === 'redirect') {
+    script.dataset.authUrl = `${location.origin}${apiBase}/callback?redirect=${encodeURIComponent(props.redirectTo)}`
+  } else {
+    script.dataset.onauth = `${callback}(user)`
+  }
   if (props.cornerRadius !== undefined) script.dataset.radius = String(props.cornerRadius)
   if (props.requestAccess) script.dataset.requestAccess = 'write'
   if (props.lang) script.dataset.lang = props.lang
