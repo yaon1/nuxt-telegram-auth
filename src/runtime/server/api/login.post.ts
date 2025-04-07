@@ -1,6 +1,6 @@
 import { createError, defineEventHandler, readBody } from 'h3'
 import { useRuntimeConfig } from '#imports'
-import { useTelegramSession } from '../utils/session'
+import { completeLogin } from '../utils/complete'
 import { verifyTelegramLogin } from '../utils/verify'
 
 export default defineEventHandler(async (event) => {
@@ -12,7 +12,5 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: result.reason === 'malformed' ? 400 : 401, statusMessage: `Telegram login ${result.reason}` })
   }
 
-  const session = await useTelegramSession(event)
-  await session.update({ user: result.user })
-  return result.user
+  return completeLogin(event, result.user)
 })

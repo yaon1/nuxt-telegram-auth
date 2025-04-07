@@ -1,6 +1,6 @@
 import { createError, defineEventHandler, readBody } from 'h3'
 import { useRuntimeConfig } from '#imports'
-import { useTelegramSession } from '../utils/session'
+import { completeLogin } from '../utils/complete'
 import { verifyWebAppInitData } from '../utils/webapp'
 
 /** Exchanges Mini App initData for the same cookie session the Login Widget creates. */
@@ -19,6 +19,5 @@ export default defineEventHandler(async (event) => {
 
   const { language_code: _lang, is_premium: _premium, allows_write_to_pm: _pm, ...user } = result.data.user
   const sessionUser = { ...user, auth_date: result.data.auth_date }
-  await (await useTelegramSession(event)).update({ user: sessionUser })
-  return sessionUser
+  return completeLogin(event, sessionUser)
 })

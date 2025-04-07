@@ -1,7 +1,7 @@
 import { createError, defineEventHandler, getQuery, sendRedirect } from 'h3'
 import { useRuntimeConfig } from '#imports'
 import { safeRedirect } from '../utils/redirect'
-import { useTelegramSession } from '../utils/session'
+import { completeLogin } from '../utils/complete'
 import { verifyTelegramLogin } from '../utils/verify'
 
 /**
@@ -18,6 +18,6 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: result.reason === 'malformed' ? 400 : 401, statusMessage: `Telegram login ${result.reason}` })
   }
 
-  await (await useTelegramSession(event)).update({ user: result.user })
+  await completeLogin(event, result.user)
   return sendRedirect(event, safeRedirect(redirect))
 })
