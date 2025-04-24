@@ -18,6 +18,8 @@ export interface ModuleOptions {
   webApp: boolean
   /** Where the `telegram-auth` middleware sends visitors who are not logged in. */
   redirectTo: string
+  /** Restrict sign-in to these Telegram ids or usernames; empty allows everyone. */
+  allowedUsers: (string | number)[]
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -31,6 +33,7 @@ export default defineNuxtModule<ModuleOptions>({
     apiBase: '/api/_auth/telegram',
     webApp: false,
     redirectTo: '/login',
+    allowedUsers: [],
   },
   setup(options, nuxt) {
     const { resolve } = createResolver(import.meta.url)
@@ -41,6 +44,7 @@ export default defineNuxtModule<ModuleOptions>({
       sessionPassword: options.sessionPassword,
       authMaxAge: options.authMaxAge,
       sessionMaxAge: options.sessionMaxAge,
+      allowedUsers: options.allowedUsers,
     })
     nuxt.options.runtimeConfig.public.telegramAuth = defu(nuxt.options.runtimeConfig.public.telegramAuth, {
       botUsername: options.botUsername,
@@ -78,7 +82,7 @@ export default defineNuxtModule<ModuleOptions>({
 
 declare module '@nuxt/schema' {
   interface RuntimeConfig {
-    telegramAuth: Pick<ModuleOptions, 'botToken' | 'sessionPassword' | 'authMaxAge' | 'sessionMaxAge'>
+    telegramAuth: Pick<ModuleOptions, 'botToken' | 'sessionPassword' | 'authMaxAge' | 'sessionMaxAge' | 'allowedUsers'>
   }
   interface PublicRuntimeConfig {
     telegramAuth: Pick<ModuleOptions, 'botUsername' | 'apiBase' | 'redirectTo'>
