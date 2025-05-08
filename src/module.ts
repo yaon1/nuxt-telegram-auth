@@ -80,6 +80,13 @@ export default defineNuxtModule<ModuleOptions>({
   },
 })
 
+declare module 'nitropack/types' {
+  interface NitroRuntimeHooks {
+    'telegram-auth:login': (payload: { user: import('./runtime/server/utils/verify').TelegramUser; event: import('h3').H3Event }) => void | Promise<void>
+    'telegram-auth:logout': (payload: { user: import('./runtime/server/utils/verify').TelegramUser; event: import('h3').H3Event }) => void | Promise<void>
+  }
+}
+
 declare module '@nuxt/schema' {
   interface RuntimeConfig {
     telegramAuth: Pick<ModuleOptions, 'botToken' | 'sessionPassword' | 'authMaxAge' | 'sessionMaxAge' | 'allowedUsers'>
