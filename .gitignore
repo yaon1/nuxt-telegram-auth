@@ -6,3 +6,5 @@ playground/.nuxt/
 .env
 playground/.env
 playground/.output/
+test/fixtures/*/.nuxt/
+test/fixtures/*/.output/
