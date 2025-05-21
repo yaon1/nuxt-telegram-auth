@@ -28,4 +28,10 @@ describe('module e2e', async () => {
     expect(await $fetch('/api/me', { headers: { cookie } })).toEqual({ id: 42 })
     expect(await $fetch(`${api}/session`, { headers: { cookie } })).toMatchObject({ user: { id: 42, first_name: 'Ada' } })
   })
+
+  it('rejects forged widget data', async () => {
+    const forged = { ...signWidget({ id: 42, first_name: 'Ada', auth_date: now() }), id: 7 }
+    const res = await fetch(`${api}/login`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(forged) })
+    expect(res.status).toBe(401)
+  })
 })
