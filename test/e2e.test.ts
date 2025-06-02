@@ -34,4 +34,20 @@ describe('module e2e', async () => {
     const res = await fetch(`${api}/login`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(forged) })
     expect(res.status).toBe(401)
   })
+
+  it('blocks users outside the allow-list', async () => {
+    const res = await fetch(`${api}/login`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(signWidget({ id: 999, first_name: 'Mallory', username: 'mallory', auth_date: now() })),
+    })
+    expect(res.status).toBe(403)
+
+    const byName = await fetch(`${api}/login`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(signWidget({ id: 1000, first_name: 'Ada', username: 'ADA', auth_date: now() })),
+    })
+    expect(byName.status).toBe(200)
+  })
 })
