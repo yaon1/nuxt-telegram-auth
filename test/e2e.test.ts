@@ -69,4 +69,20 @@ describe('module e2e', async () => {
     const evil = await fetch(`${api}/callback?${query}`, { redirect: 'manual' })
     expect(evil.headers.get('location')).toBe('/')
   })
+
+  it('redirects anonymous visitors from protected pages', async () => {
+    const res = await fetch('/private', { redirect: 'manual' })
+    expect(res.status).toBe(302)
+    expect(res.headers.get('location')).toBe('/login?redirect=/private')
+  })
+
+  it('renders protected pages for signed-in users', async () => {
+    const login = await fetch(`${api}/login`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(signWidget({ id: 42, first_name: 'Ada', auth_date: now() })),
+    })
+    const html = await $fetch<string>('/private', { headers: { cookie: await cookieFrom(login) } })
+    expect(html).toContain('private Ada')
+  })
 })
