@@ -97,4 +97,14 @@ describe('module e2e', async () => {
     const cleared = await cookieFrom(out)
     expect((await fetch('/api/me', { headers: { cookie: cleared } })).status).toBe(401)
   })
+
+  it('lets a login hook veto the sign-in', async () => {
+    const res = await fetch(`${api}/login`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(signWidget({ id: 13, first_name: 'Bob', username: 'banned', auth_date: now() })),
+    })
+    expect(res.status).toBe(403)
+    expect(res.headers.get('set-cookie')).toBeNull()
+  })
 })

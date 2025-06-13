@@ -7,6 +7,6 @@ export default defineNuxtConfig({
     botUsername: 'test_bot',
     botToken: '123:test-token',
     sessionPassword: 'a-very-long-session-password-for-tests!!',
-    allowedUsers: [42, 7, '@ada'],
+    allowedUsers: [42, 7, 13, '@ada'],
   },
 })
