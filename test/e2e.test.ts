@@ -50,4 +50,11 @@ describe('module e2e', async () => {
     })
     expect(byName.status).toBe(200)
   })
+
+  it('signs in from Mini App init data', async () => {
+    const initData = signWebApp({ user: JSON.stringify({ id: 7, first_name: 'Mini', language_code: 'ru' }), auth_date: String(now()) })
+    const res = await fetch(`${api}/webapp`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ initData }) })
+    expect(res.status).toBe(200)
+    expect(await $fetch('/api/me', { headers: { cookie: await cookieFrom(res) } })).toEqual({ id: 7 })
+  })
 })
