@@ -57,4 +57,16 @@ describe('module e2e', async () => {
     expect(res.status).toBe(200)
     expect(await $fetch('/api/me', { headers: { cookie: await cookieFrom(res) } })).toEqual({ id: 7 })
   })
+
+  it('handles redirect-mode callbacks safely', async () => {
+    const query = new URLSearchParams(Object.entries(signWidget({ id: 42, first_name: 'Ada', auth_date: now() })).map(([k, v]) => [k, String(v)]))
+    query.set('redirect', '/private')
+    const res = await fetch(`${api}/callback?${query}`, { redirect: 'manual' })
+    expect(res.status).toBe(302)
+    expect(res.headers.get('location')).toBe('/private')
+
+    query.set('redirect', '//evil.example')
+    const evil = await fetch(`${api}/callback?${query}`, { redirect: 'manual' })
+    expect(evil.headers.get('location')).toBe('/')
+  })
 })
