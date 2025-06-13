@@ -85,4 +85,16 @@ describe('module e2e', async () => {
     const html = await $fetch<string>('/private', { headers: { cookie: await cookieFrom(login) } })
     expect(html).toContain('private Ada')
   })
+
+  it('logs out', async () => {
+    const login = await fetch(`${api}/login`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(signWidget({ id: 42, first_name: 'Ada', auth_date: now() })),
+    })
+    const cookie = await cookieFrom(login)
+    const out = await fetch(`${api}/logout`, { method: 'POST', headers: { cookie } })
+    const cleared = await cookieFrom(out)
+    expect((await fetch('/api/me', { headers: { cookie: cleared } })).status).toBe(401)
+  })
 })
