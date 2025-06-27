@@ -1,10 +1,12 @@
 import { createError, defineEventHandler, readBody } from 'h3'
 import { useRuntimeConfig } from '#imports'
+import { assertSameOrigin } from '../utils/origin'
 import { completeLogin } from '../utils/complete'
 import { verifyWebAppInitData } from '../utils/webapp'
 
 /** Exchanges Mini App initData for the same cookie session the Login Widget creates. */
 export default defineEventHandler(async (event) => {
+  assertSameOrigin(event)
   const { telegramAuth } = useRuntimeConfig(event)
   const body = await readBody<{ initData?: unknown }>(event)
   const initData = typeof body?.initData === 'string' ? body.initData : ''

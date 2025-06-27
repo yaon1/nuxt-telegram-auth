@@ -107,4 +107,13 @@ describe('module e2e', async () => {
     expect(res.status).toBe(403)
     expect(res.headers.get('set-cookie')).toBeNull()
   })
+
+  it('rejects cross-origin login posts', async () => {
+    const res = await fetch(`${api}/login`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', origin: 'https://evil.example' },
+      body: JSON.stringify(signWidget({ id: 42, first_name: 'Ada', auth_date: now() })),
+    })
+    expect(res.status).toBe(403)
+  })
 })
