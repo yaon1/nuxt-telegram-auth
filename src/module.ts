@@ -74,6 +74,7 @@ export default defineNuxtModule<ModuleOptions>({
     addImports([
       { name: 'useTelegramAuth', from: resolve('./runtime/composables/useTelegramAuth') },
       { name: 'useTelegramWebApp', from: resolve('./runtime/composables/useTelegramWebApp') },
+      { name: 'useWebAppTheme', from: resolve('./runtime/composables/useWebAppTheme') },
     ])
     addRouteMiddleware({ name: 'telegram-auth', path: resolve('./runtime/middleware/telegram-auth') })
     addComponent({ name: 'TelegramLoginButton', filePath: resolve('./runtime/components/TelegramLoginButton.vue') })
