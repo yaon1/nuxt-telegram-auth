@@ -1,7 +1,8 @@
 // @vitest-environment happy-dom
 import { mount } from '@vue/test-utils'
 import { afterEach, expect, it, vi } from 'vitest'
-import { defineComponent } from 'vue'
+import { defineComponent, nextTick, ref } from 'vue'
+import { useMainButton } from '../src/runtime/composables/useMainButton'
 import { useWebAppTheme } from '../src/runtime/composables/useWebAppTheme'
 
 afterEach(() => {
@@ -29,4 +30,23 @@ it('copies theme params into CSS variables and follows theme changes', () => {
   expect(style.getPropertyValue('--tg-bg-color')).toBe('#ffffff')
   w.unmount()
   expect(app.offEvent).toHaveBeenCalledWith('themeChanged', onTheme)
+})
+
+it('drives the MainButton and cleans up', async () => {
+  const MainButton = { setText: vi.fn(), show: vi.fn(), hide: vi.fn(), onClick: vi.fn(), offClick: vi.fn() }
+  window.Telegram = { WebApp: { MainButton } as never }
+  const valid = ref(false)
+  const submit = vi.fn()
+
+  const w = mount(defineComponent(() => (useMainButton('Оплатить', submit, valid), () => null)))
+  expect(MainButton.setText).toHaveBeenCalledWith('Оплатить')
+  expect(MainButton.hide).toHaveBeenCalled()
+  expect(MainButton.onClick).toHaveBeenCalledWith(submit)
+
+  valid.value = true
+  await nextTick()
+  expect(MainButton.show).toHaveBeenCalled()
+
+  w.unmount()
+  expect(MainButton.offClick).toHaveBeenCalledWith(submit)
 })
