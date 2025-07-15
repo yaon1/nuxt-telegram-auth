@@ -2,6 +2,7 @@
 import { mount } from '@vue/test-utils'
 import { afterEach, expect, it, vi } from 'vitest'
 import { defineComponent, nextTick, ref } from 'vue'
+import { useBackButton } from '../src/runtime/composables/useBackButton'
 import { useMainButton } from '../src/runtime/composables/useMainButton'
 import { useWebAppTheme } from '../src/runtime/composables/useWebAppTheme'
 
@@ -49,4 +50,15 @@ it('drives the MainButton and cleans up', async () => {
 
   w.unmount()
   expect(MainButton.offClick).toHaveBeenCalledWith(submit)
+})
+
+it('shows the BackButton while mounted', () => {
+  const BackButton = { show: vi.fn(), hide: vi.fn(), onClick: vi.fn(), offClick: vi.fn() }
+  window.Telegram = { WebApp: { BackButton } as never }
+  const back = vi.fn()
+  const w = mount(defineComponent(() => (useBackButton(back), () => null)))
+  expect(BackButton.show).toHaveBeenCalled()
+  w.unmount()
+  expect(BackButton.offClick).toHaveBeenCalledWith(back)
+  expect(BackButton.hide).toHaveBeenCalled()
 })
