@@ -45,8 +45,15 @@ export function useTelegramWebApp() {
     return auth.loginWithWebApp(webApp.value.initData)
   }
 
+  /** Haptic feedback; silently does nothing outside Telegram. */
+  const haptic = {
+    impact: (style: 'light' | 'medium' | 'heavy' = 'light') => webApp.value?.HapticFeedback?.impactOccurred(style),
+    notify: (type: 'error' | 'success' | 'warning') => webApp.value?.HapticFeedback?.notificationOccurred(type),
+  }
+
   return {
     webApp,
+    haptic,
     isMiniApp: computed(() => webApp.value !== null),
     colorScheme: computed(() => webApp.value?.colorScheme ?? null),
     signIn,
