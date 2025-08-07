@@ -1,4 +1,7 @@
 import { defineEventHandler } from 'h3'
-import { getTelegramUser } from '../utils/session'
+import { getTelegramUser, refreshTelegramSession } from '../utils/session'
 
-export default defineEventHandler(async (event) => ({ user: await getTelegramUser(event) }))
+export default defineEventHandler(async (event) => {
+  await refreshTelegramSession(event)
+  return { user: await getTelegramUser(event) }
+})

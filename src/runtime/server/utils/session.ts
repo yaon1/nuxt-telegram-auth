@@ -5,6 +5,8 @@ import type { TelegramUser } from './verify'
 
 interface SessionData {
   user?: TelegramUser
+  /** Unix ms when the cookie was last re-issued; drives the rolling expiry. */
+  refreshedAt?: number
 }
 
 export function useTelegramSession(event: H3Event) {
@@ -22,6 +24,19 @@ export function useTelegramSession(event: H3Event) {
 
 export async function getTelegramUser(event: H3Event): Promise<TelegramUser | null> {
   return (await useTelegramSession(event)).data.user ?? null
+}
+
+/**
+ * Re-issues the cookie once half its lifetime has passed, so active users stay
+ * signed in while idle sessions still expire after sessionMaxAge.
+ */
+export async function refreshTelegramSession(event: H3Event, now = Date.now()): Promise<void> {
+  const session = await useTelegramSession(event)
+  if (!session.data.user) return
+  const maxAgeMs = useRuntimeConfig(event).telegramAuth.sessionMaxAge * 1000
+  if (now - (session.data.refreshedAt ?? 0) > maxAgeMs / 2) {
+    await session.update({ refreshedAt: now })
+  }
 }
 
 /** Throws 401 when the request has no authenticated Telegram user. */
