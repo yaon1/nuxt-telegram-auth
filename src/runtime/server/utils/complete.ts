@@ -13,5 +13,6 @@ export async function completeLogin(event: H3Event, user: TelegramUser): Promise
   // Lets the app upsert the user in its database or veto the login by throwing.
   await useNitroApp().hooks.callHook('telegram-auth:login', { user, event })
   await (await useTelegramSession(event)).update({ user, refreshedAt: Date.now() })
+  event.context.telegramUser = user
   return user
 }

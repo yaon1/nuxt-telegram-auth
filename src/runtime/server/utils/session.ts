@@ -23,7 +23,11 @@ export function useTelegramSession(event: H3Event) {
 }
 
 export async function getTelegramUser(event: H3Event): Promise<TelegramUser | null> {
-  return (await useTelegramSession(event)).data.user ?? null
+  // Unsealing the cookie costs a few crypto calls; reuse the result within one request.
+  if (!('telegramUser' in event.context)) {
+    event.context.telegramUser = (await useTelegramSession(event)).data.user ?? null
+  }
+  return event.context.telegramUser as TelegramUser | null
 }
 
 /**
