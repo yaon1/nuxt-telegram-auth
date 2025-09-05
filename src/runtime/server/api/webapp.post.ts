@@ -8,6 +8,7 @@ import { verifyWebAppInitData } from '../utils/webapp'
 export default defineEventHandler(async (event) => {
   assertSameOrigin(event)
   const { telegramAuth } = useRuntimeConfig(event)
+  if (!telegramAuth.botToken) throw createError({ statusCode: 500, statusMessage: 'Set NUXT_TELEGRAM_AUTH_BOT_TOKEN to verify Telegram logins' })
   const body = await readBody<{ initData?: unknown }>(event)
   const initData = typeof body?.initData === 'string' ? body.initData : ''
   const result = await verifyWebAppInitData(initData, telegramAuth.botToken, telegramAuth.authMaxAge)

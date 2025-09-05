@@ -7,6 +7,7 @@ import { verifyTelegramLogin } from '../utils/verify'
 export default defineEventHandler(async (event) => {
   assertSameOrigin(event)
   const { telegramAuth } = useRuntimeConfig(event)
+  if (!telegramAuth.botToken) throw createError({ statusCode: 500, statusMessage: 'Set NUXT_TELEGRAM_AUTH_BOT_TOKEN to verify Telegram logins' })
   const body = await readBody<Record<string, unknown>>(event)
   const result = await verifyTelegramLogin(body ?? {}, telegramAuth.botToken, telegramAuth.authMaxAge)
 

@@ -61,6 +61,10 @@ export default defineNuxtModule<ModuleOptions>({
       nuxt.options.app.head.script.push({ src: 'https://telegram.org/js/telegram-web-app.js', tagPriority: 'critical' })
     }
 
+    if (options.sessionPassword && options.sessionPassword.length < 32) {
+      logger.warn('`telegramAuth.sessionPassword` is shorter than 32 characters; sessions will fail at runtime.')
+    }
+
     if (!options.botUsername && !nuxt.options._prepare) {
       logger.warn('`telegramAuth.botUsername` is empty; the login widget will not render.')
     }
