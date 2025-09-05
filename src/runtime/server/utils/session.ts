@@ -14,11 +14,13 @@ export function useTelegramSession(event: H3Event) {
   if (!telegramAuth.sessionPassword || telegramAuth.sessionPassword.length < 32) {
     throw createError({ statusCode: 500, statusMessage: 'telegramAuth.sessionPassword must be at least 32 characters' })
   }
+  const { name, domain, sameSite, secure } = telegramAuth.cookie
   return useSession<SessionData>(event, {
-    name: 'nuxt-telegram-auth',
+    name,
     password: telegramAuth.sessionPassword,
     maxAge: telegramAuth.sessionMaxAge,
-    cookie: { sameSite: 'lax', httpOnly: true, secure: !import.meta.dev },
+    // Mini Apps open inside Telegram's webview on telegram.org frames; they need SameSite=None.
+    cookie: { sameSite, domain, httpOnly: true, secure: secure ?? (sameSite === 'none' || !import.meta.dev) },
   })
 }
 

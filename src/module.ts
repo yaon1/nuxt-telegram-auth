@@ -20,6 +20,8 @@ export interface ModuleOptions {
   redirectTo: string
   /** Restrict sign-in to these Telegram ids or usernames; empty allows everyone. */
   allowedUsers: (string | number)[]
+  /** Session cookie settings. */
+  cookie: { name: string; domain?: string; sameSite: 'lax' | 'strict' | 'none'; secure?: boolean }
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -34,6 +36,7 @@ export default defineNuxtModule<ModuleOptions>({
     webApp: false,
     redirectTo: '/login',
     allowedUsers: [],
+    cookie: { name: 'nuxt-telegram-auth', sameSite: 'lax' },
   },
   setup(options, nuxt) {
     const { resolve } = createResolver(import.meta.url)
@@ -45,6 +48,7 @@ export default defineNuxtModule<ModuleOptions>({
       authMaxAge: options.authMaxAge,
       sessionMaxAge: options.sessionMaxAge,
       allowedUsers: options.allowedUsers,
+      cookie: options.cookie,
     })
     nuxt.options.runtimeConfig.public.telegramAuth = defu(nuxt.options.runtimeConfig.public.telegramAuth, {
       botUsername: options.botUsername,
@@ -92,7 +96,7 @@ declare module 'nitropack/types' {
 
 declare module '@nuxt/schema' {
   interface RuntimeConfig {
-    telegramAuth: Pick<ModuleOptions, 'botToken' | 'sessionPassword' | 'authMaxAge' | 'sessionMaxAge' | 'allowedUsers'>
+    telegramAuth: Pick<ModuleOptions, 'botToken' | 'sessionPassword' | 'authMaxAge' | 'sessionMaxAge' | 'allowedUsers' | 'cookie'>
   }
   interface PublicRuntimeConfig {
     telegramAuth: Pick<ModuleOptions, 'botUsername' | 'apiBase' | 'redirectTo'>
