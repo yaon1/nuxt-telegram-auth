@@ -10,6 +10,8 @@ export interface ModuleOptions {
   sessionPassword: string
   /** Reject widget payloads older than this many seconds. */
   authMaxAge: number
+  /** Reject Mini App init data older than this many seconds; it's resent on every launch, so keep it short. */
+  webAppMaxAge: number
   /** Session cookie lifetime in seconds. */
   sessionMaxAge: number
   /** Prefix for the server routes. */
@@ -31,6 +33,7 @@ export default defineNuxtModule<ModuleOptions>({
     botUsername: '',
     sessionPassword: '',
     authMaxAge: 86_400,
+    webAppMaxAge: 3600,
     sessionMaxAge: 60 * 60 * 24 * 30,
     apiBase: '/api/_auth/telegram',
     webApp: false,
@@ -46,6 +49,7 @@ export default defineNuxtModule<ModuleOptions>({
       botToken: options.botToken,
       sessionPassword: options.sessionPassword,
       authMaxAge: options.authMaxAge,
+      webAppMaxAge: options.webAppMaxAge,
       sessionMaxAge: options.sessionMaxAge,
       allowedUsers: options.allowedUsers,
       cookie: options.cookie,
@@ -100,7 +104,7 @@ declare module 'nitropack/types' {
 
 declare module '@nuxt/schema' {
   interface RuntimeConfig {
-    telegramAuth: Pick<ModuleOptions, 'botToken' | 'sessionPassword' | 'authMaxAge' | 'sessionMaxAge' | 'allowedUsers' | 'cookie'>
+    telegramAuth: Pick<ModuleOptions, 'botToken' | 'sessionPassword' | 'authMaxAge' | 'webAppMaxAge' | 'sessionMaxAge' | 'allowedUsers' | 'cookie'>
   }
   interface PublicRuntimeConfig {
     telegramAuth: Pick<ModuleOptions, 'botUsername' | 'apiBase' | 'redirectTo'>

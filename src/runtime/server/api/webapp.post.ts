@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
   if (!telegramAuth.botToken) throw createError({ statusCode: 500, statusMessage: 'Set NUXT_TELEGRAM_AUTH_BOT_TOKEN to verify Telegram logins' })
   const body = await readBody<{ initData?: unknown }>(event)
   const initData = typeof body?.initData === 'string' ? body.initData : ''
-  const result = await verifyWebAppInitData(initData, telegramAuth.botToken, telegramAuth.authMaxAge)
+  const result = await verifyWebAppInitData(initData, telegramAuth.botToken, telegramAuth.webAppMaxAge)
 
   if (!result.ok) {
     throw createError({ statusCode: result.reason === 'malformed' ? 400 : 401, statusMessage: `Mini App init data ${result.reason}` })
