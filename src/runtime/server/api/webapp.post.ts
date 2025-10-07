@@ -22,5 +22,7 @@ export default defineEventHandler(async (event) => {
 
   const { language_code: _lang, is_premium: _premium, allows_write_to_pm: _pm, ...user } = result.data.user
   const sessionUser = { ...user, auth_date: result.data.auth_date }
+  // start_param carries deep-link payloads (t.me/bot/app?startapp=ref_42), e.g. referral codes.
+  if (result.data.start_param) event.context.telegramStartParam = result.data.start_param
   return completeLogin(event, sessionUser)
 })

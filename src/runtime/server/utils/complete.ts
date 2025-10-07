@@ -11,7 +11,7 @@ export async function completeLogin(event: H3Event, user: TelegramUser): Promise
     throw createError({ statusCode: 403, statusMessage: 'This Telegram account is not allowed to sign in' })
   }
   // Lets the app upsert the user in its database or veto the login by throwing.
-  await useNitroApp().hooks.callHook('telegram-auth:login', { user, event })
+  await useNitroApp().hooks.callHook('telegram-auth:login', { user, event, startParam: event.context.telegramStartParam as string | undefined })
   await (await useTelegramSession(event)).update({ user, refreshedAt: Date.now() })
   event.context.telegramUser = user
   return user
