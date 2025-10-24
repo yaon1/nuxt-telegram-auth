@@ -9,8 +9,8 @@ await fetchSession()
     <template v-if="loggedIn">
       <p>Hello, {{ user?.first_name }} <span v-if="user?.username">(@{{ user.username }})</span></p>
       <button @click="logout">Log out</button>
-      <p><a href="/api/me">GET /api/me</a> (protected)</p>
+      <p><a href="/api/me">GET /api/me</a> (protected) · <NuxtLink to="/dashboard">Кабинет</NuxtLink></p>
     </template>
-    <TelegramLoginButton v-else size="large" :corner-radius="8" @error="console.error" />
+    <p v-else><NuxtLink to="/login">Войти через Telegram</NuxtLink></p>
   </main>
 </template>

@@ -4,5 +4,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   telegramAuth: {
     botUsername: 'your_bot',
+    webApp: true,
+    redirectTo: '/login',
   },
 })
