@@ -116,4 +116,10 @@ describe('module e2e', async () => {
     })
     expect(res.status).toBe(403)
   })
+
+  it('passes start_param to the login hook', async () => {
+    const initData = signWebApp({ user: JSON.stringify({ id: 7, first_name: 'Mini' }), auth_date: String(now()), start_param: 'ref_42' })
+    await fetch(`${api}/webapp`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ initData }) })
+    expect(await $fetch('/api/last-start')).toEqual({ startParam: 'ref_42' })
+  })
 })
