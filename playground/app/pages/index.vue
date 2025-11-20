@@ -4,7 +4,7 @@ await fetchSession()
 </script>
 
 <template>
-  <main style="font-family: system-ui; max-width: 480px; margin: 48px auto">
+  <main class="page">
     <h1>nuxt-telegram-auth</h1>
     <template v-if="loggedIn">
       <p>Hello, {{ user?.first_name }} <span v-if="user?.username">(@{{ user.username }})</span></p>
