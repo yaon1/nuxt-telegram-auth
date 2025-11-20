@@ -18,19 +18,25 @@
     "build": "nuxt-module-build build",
     "dev": "nuxi dev playground",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
-    "test": "vitest run"
+    "test": "vitest run",
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@nuxt/kit": "^4.0.0",
     "defu": "^6.1.4"
   },
   "devDependencies": {
+    "@nuxt/eslint-config": "^1.17.0",
     "@nuxt/module-builder": "^1.0.3",
     "@nuxt/schema": "^4.6.2",
     "@nuxt/test-utils": "^4.3.4",
     "@vue/test-utils": "^2.5.1",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
     "happy-dom": "^21.0.3",
     "nuxt": "^4.5.2",
+    "prettier": "^3.9.10",
     "typescript": "^5.9.3",
     "vitest": "^4.1.12",
     "vue-tsc": "^3.3.13"

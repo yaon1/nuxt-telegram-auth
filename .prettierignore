@@ -1,0 +1,4 @@
+dist
+.nuxt
+.output
+package-lock.json
