@@ -1,4 +1,13 @@
-import { addComponent, addImports, addRouteMiddleware, addServerHandler, addServerImports, createResolver, defineNuxtModule, useLogger } from '@nuxt/kit'
+import {
+  addComponent,
+  addImports,
+  addRouteMiddleware,
+  addServerHandler,
+  addServerImports,
+  createResolver,
+  defineNuxtModule,
+  useLogger,
+} from '@nuxt/kit'
 import { defu } from 'defu'
 
 export interface ModuleOptions {
@@ -73,7 +82,13 @@ export default defineNuxtModule<ModuleOptions>({
       logger.warn('`telegramAuth.botUsername` is empty; the login widget will not render.')
     }
 
-    for (const [route, method] of [['login', 'post'], ['webapp', 'post'], ['callback', 'get'], ['session', 'get'], ['logout', 'post']] as const) {
+    for (const [route, method] of [
+      ['login', 'post'],
+      ['webapp', 'post'],
+      ['callback', 'get'],
+      ['session', 'get'],
+      ['logout', 'post'],
+    ] as const) {
       addServerHandler({ route: `${options.apiBase}/${route}`, method, handler: resolve(`./runtime/server/api/${route}.${method}`) })
     }
 
@@ -97,14 +112,24 @@ export default defineNuxtModule<ModuleOptions>({
 
 declare module 'nitropack/types' {
   interface NitroRuntimeHooks {
-    'telegram-auth:login': (payload: { user: import('./runtime/server/utils/verify').TelegramUser; event: import('h3').H3Event; startParam?: string }) => void | Promise<void>
-    'telegram-auth:logout': (payload: { user: import('./runtime/server/utils/verify').TelegramUser; event: import('h3').H3Event }) => void | Promise<void>
+    'telegram-auth:login': (payload: {
+      user: import('./runtime/server/utils/verify').TelegramUser
+      event: import('h3').H3Event
+      startParam?: string
+    }) => void | Promise<void>
+    'telegram-auth:logout': (payload: {
+      user: import('./runtime/server/utils/verify').TelegramUser
+      event: import('h3').H3Event
+    }) => void | Promise<void>
   }
 }
 
 declare module '@nuxt/schema' {
   interface RuntimeConfig {
-    telegramAuth: Pick<ModuleOptions, 'botToken' | 'sessionPassword' | 'authMaxAge' | 'webAppMaxAge' | 'sessionMaxAge' | 'allowedUsers' | 'cookie'>
+    telegramAuth: Pick<
+      ModuleOptions,
+      'botToken' | 'sessionPassword' | 'authMaxAge' | 'webAppMaxAge' | 'sessionMaxAge' | 'allowedUsers' | 'cookie'
+    >
   }
   interface PublicRuntimeConfig {
     telegramAuth: Pick<ModuleOptions, 'botUsername' | 'apiBase' | 'redirectTo'>

@@ -16,7 +16,7 @@ export function useTelegramAuth() {
     try {
       return await task()
     } catch (e) {
-      const data = (e as { data?: { statusMessage?: string }; statusMessage?: string })
+      const data = e as { data?: { statusMessage?: string }; statusMessage?: string }
       error.value = data.data?.statusMessage ?? data.statusMessage ?? 'Sign-in failed'
       throw e
     } finally {

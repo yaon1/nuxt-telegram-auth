@@ -1,1 +1,5 @@
-{ "name": "playground", "private": true, "type": "module" }
+{
+  "name": "playground",
+  "private": true,
+  "type": "module"
+}

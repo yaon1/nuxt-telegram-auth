@@ -7,7 +7,10 @@ const NOW = 1_760_000_000
 
 // Independent reference implementation of Telegram's algorithm.
 function sign(fields: Record<string, string>): string {
-  const check = Object.keys(fields).sort().map((k) => `${k}=${fields[k]}`).join('\n')
+  const check = Object.keys(fields)
+    .sort()
+    .map((k) => `${k}=${fields[k]}`)
+    .join('\n')
   const secret = createHmac('sha256', 'WebAppData').update(TOKEN).digest()
   const hash = createHmac('sha256', secret).update(check).digest('hex')
   return new URLSearchParams({ ...fields, hash }).toString()
@@ -33,7 +36,10 @@ describe('verifyWebAppInitData', () => {
   })
 
   it('rejects stale and malformed data', async () => {
-    expect(await verifyWebAppInitData(sign({ ...fields, auth_date: String(NOW - 90_000) }), TOKEN, 86_400, NOW)).toEqual({ ok: false, reason: 'expired' })
+    expect(await verifyWebAppInitData(sign({ ...fields, auth_date: String(NOW - 90_000) }), TOKEN, 86_400, NOW)).toEqual({
+      ok: false,
+      reason: 'expired',
+    })
     expect(await verifyWebAppInitData('user=x', TOKEN)).toEqual({ ok: false, reason: 'malformed' })
   })
 })

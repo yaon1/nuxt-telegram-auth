@@ -31,7 +31,11 @@ describe('module e2e', async () => {
 
   it('rejects forged widget data', async () => {
     const forged = { ...signWidget({ id: 42, first_name: 'Ada', auth_date: now() }), id: 7 }
-    const res = await fetch(`${api}/login`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(forged) })
+    const res = await fetch(`${api}/login`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(forged),
+    })
     expect(res.status).toBe(401)
   })
 
@@ -53,13 +57,19 @@ describe('module e2e', async () => {
 
   it('signs in from Mini App init data', async () => {
     const initData = signWebApp({ user: JSON.stringify({ id: 7, first_name: 'Mini', language_code: 'ru' }), auth_date: String(now()) })
-    const res = await fetch(`${api}/webapp`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ initData }) })
+    const res = await fetch(`${api}/webapp`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ initData }),
+    })
     expect(res.status).toBe(200)
     expect(await $fetch('/api/me', { headers: { cookie: await cookieFrom(res) } })).toEqual({ id: 7 })
   })
 
   it('handles redirect-mode callbacks safely', async () => {
-    const query = new URLSearchParams(Object.entries(signWidget({ id: 42, first_name: 'Ada', auth_date: now() })).map(([k, v]) => [k, String(v)]))
+    const query = new URLSearchParams(
+      Object.entries(signWidget({ id: 42, first_name: 'Ada', auth_date: now() })).map(([k, v]) => [k, String(v)]),
+    )
     query.set('redirect', '/private')
     const res = await fetch(`${api}/callback?${query}`, { redirect: 'manual' })
     expect(res.status).toBe(302)

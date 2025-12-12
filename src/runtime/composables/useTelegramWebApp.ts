@@ -12,7 +12,10 @@ export interface TelegramWebApp {
   close(): void
   onEvent?(event: string, handler: () => void): void
   offEvent?(event: string, handler: () => void): void
-  HapticFeedback?: { impactOccurred(style: 'light' | 'medium' | 'heavy'): void; notificationOccurred(type: 'error' | 'success' | 'warning'): void }
+  HapticFeedback?: {
+    impactOccurred(style: 'light' | 'medium' | 'heavy'): void
+    notificationOccurred(type: 'error' | 'success' | 'warning'): void
+  }
   BackButton?: { show(): void; hide(): void; onClick(cb: () => void): void; offClick(cb: () => void): void }
   MainButton?: { setText(text: string): void; show(): void; hide(): void; onClick(cb: () => void): void; offClick(cb: () => void): void }
 }

@@ -54,14 +54,14 @@ NUXT_TELEGRAM_AUTH_SESSION_PASSWORD=случайная-строка-миниму
 
 ## Опции
 
-| Опция | По умолчанию | |
-|---|---|---|
-| `botUsername` | — | Имя бота без `@` |
-| `botToken` | — | Лучше через `NUXT_TELEGRAM_AUTH_BOT_TOKEN` |
-| `sessionPassword` | — | Не короче 32 символов, через `NUXT_TELEGRAM_AUTH_SESSION_PASSWORD` |
-| `authMaxAge` | `86400` | Отклонять данные виджета старше N секунд |
-| `sessionMaxAge` | `2592000` | Срок жизни cookie, секунды |
-| `apiBase` | `/api/_auth/telegram` | Префикс для маршрутов `login`, `session`, `logout` |
+| Опция             | По умолчанию          |                                                                    |
+| ----------------- | --------------------- | ------------------------------------------------------------------ |
+| `botUsername`     | —                     | Имя бота без `@`                                                   |
+| `botToken`        | —                     | Лучше через `NUXT_TELEGRAM_AUTH_BOT_TOKEN`                         |
+| `sessionPassword` | —                     | Не короче 32 символов, через `NUXT_TELEGRAM_AUTH_SESSION_PASSWORD` |
+| `authMaxAge`      | `86400`               | Отклонять данные виджета старше N секунд                           |
+| `sessionMaxAge`   | `2592000`             | Срок жизни cookie, секунды                                         |
+| `apiBase`         | `/api/_auth/telegram` | Префикс для маршрутов `login`, `session`, `logout`                 |
 
 ## Разработка
 

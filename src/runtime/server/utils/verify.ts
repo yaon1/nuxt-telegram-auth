@@ -22,7 +22,7 @@ export async function verifyTelegramLogin(
   now = Math.floor(Date.now() / 1000),
 ): Promise<VerifyResult> {
   const { hash, ...fields } = data
-  if (typeof hash !== 'string' || typeof fields.id !== 'number' && typeof fields.id !== 'string') {
+  if (typeof hash !== 'string' || (typeof fields.id !== 'number' && typeof fields.id !== 'string')) {
     return { ok: false, reason: 'malformed' }
   }
 

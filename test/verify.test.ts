@@ -7,7 +7,10 @@ const NOW = 1_760_000_000
 
 // Reference signer written independently with node:crypto to cross-check the Web Crypto implementation.
 function sign(fields: Record<string, string | number>): Record<string, string | number> {
-  const check = Object.keys(fields).sort().map((k) => `${k}=${fields[k]}`).join('\n')
+  const check = Object.keys(fields)
+    .sort()
+    .map((k) => `${k}=${fields[k]}`)
+    .join('\n')
   const secret = createHash('sha256').update(TOKEN).digest()
   return { ...fields, hash: createHmac('sha256', secret).update(check).digest('hex') }
 }

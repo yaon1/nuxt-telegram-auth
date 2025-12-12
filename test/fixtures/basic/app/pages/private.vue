@@ -3,4 +3,6 @@ definePageMeta({ middleware: 'telegram-auth' })
 const { user } = useTelegramAuth()
 </script>
 
-<template><p>private {{ user?.first_name }}</p></template>
+<template>
+  <p>private {{ user?.first_name }}</p>
+</template>

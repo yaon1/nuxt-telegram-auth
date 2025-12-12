@@ -8,6 +8,8 @@ export function isAllowed(user: Pick<TelegramUser, 'id' | 'username'>, allowList
   if (allowList.length === 0) return true
   const username = user.username?.toLowerCase()
   return allowList.some((entry) =>
-    typeof entry === 'number' || /^\d+$/.test(entry) ? Number(entry) === user.id : username !== undefined && entry.replace(/^@/, '').toLowerCase() === username,
+    typeof entry === 'number' || /^\d+$/.test(entry)
+      ? Number(entry) === user.id
+      : username !== undefined && entry.replace(/^@/, '').toLowerCase() === username,
   )
 }

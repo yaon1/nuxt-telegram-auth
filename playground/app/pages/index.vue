@@ -7,7 +7,9 @@ await fetchSession()
   <main class="page">
     <h1>nuxt-telegram-auth</h1>
     <template v-if="loggedIn">
-      <p>Hello, {{ user?.first_name }} <span v-if="user?.username">(@{{ user.username }})</span></p>
+      <p>
+        Hello, {{ user?.first_name }} <span v-if="user?.username">(@{{ user.username }})</span>
+      </p>
       <button @click="logout">Log out</button>
       <p><a href="/api/me">GET /api/me</a> (protected) · <NuxtLink to="/dashboard">Кабинет</NuxtLink></p>
     </template>
