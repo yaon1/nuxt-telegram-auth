@@ -56,7 +56,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  delete (window as unknown as Record<string, unknown>)[callback]
+  Reflect.deleteProperty(window, callback)
 })
 </script>
 
