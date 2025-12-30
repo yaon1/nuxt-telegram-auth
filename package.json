@@ -20,7 +20,8 @@
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
     "test": "vitest run",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "typecheck": "vue-tsc --noEmit -p playground/.nuxt/tsconfig.json"
   },
   "dependencies": {
     "@nuxt/kit": "^4.0.0",

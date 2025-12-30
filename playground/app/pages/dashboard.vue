@@ -1,6 +1,11 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'telegram-auth' })
 const { user, logout } = useTelegramAuth()
+
+async function signOut() {
+  await logout()
+  await navigateTo('/')
+}
 </script>
 
 <template>
@@ -9,6 +14,6 @@ const { user, logout } = useTelegramAuth()
     <p>Страница защищена middleware <code>telegram-auth</code>.</p>
     <img v-if="user?.photo_url" :src="user.photo_url" alt="" width="64" height="64" />
     <p>{{ user?.first_name }} {{ user?.last_name }} · id {{ user?.id }}</p>
-    <button @click="logout().then(() => navigateTo('/'))">Выйти</button>
+    <button @click="signOut">Выйти</button>
   </main>
 </template>
