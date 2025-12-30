@@ -1,6 +1,6 @@
 import { assertSameOrigin } from '../utils/origin'
 import { defineEventHandler } from 'h3'
-import { useNitroApp } from '#imports'
+import { useNitroApp } from 'nitropack/runtime'
 import { useTelegramSession } from '../utils/session'
 
 export default defineEventHandler(async (event) => {

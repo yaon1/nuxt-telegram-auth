@@ -1,6 +1,7 @@
 import type { H3Event } from 'h3'
 import { createError } from 'h3'
-import { useNitroApp, useRuntimeConfig } from '#imports'
+import { useNitroApp } from 'nitropack/runtime'
+import { useRuntimeConfig } from '#imports'
 import { isAllowed } from './allow'
 import { useTelegramSession } from './session'
 import type { TelegramUser } from './verify'

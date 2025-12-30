@@ -14,7 +14,13 @@ export function useTelegramSession(event: H3Event) {
   if (!telegramAuth.sessionPassword || telegramAuth.sessionPassword.length < 32) {
     throw createError({ statusCode: 500, statusMessage: 'Set NUXT_TELEGRAM_AUTH_SESSION_PASSWORD (at least 32 characters)' })
   }
-  const { name, domain, sameSite, secure } = telegramAuth.cookie
+  // Runtime config types are inferred from defaults, which omit the optional keys.
+  const { name, domain, sameSite, secure } = telegramAuth.cookie as {
+    name: string
+    domain?: string
+    sameSite: 'lax' | 'strict' | 'none'
+    secure?: boolean
+  }
   return useSession<SessionData>(event, {
     name,
     password: telegramAuth.sessionPassword,
