@@ -41,5 +41,22 @@
     "typescript": "^5.9.3",
     "vitest": "^4.1.12",
     "vue-tsc": "^3.3.13"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yaon1/nuxt-telegram-auth.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yaon1/nuxt-telegram-auth/issues"
+  },
+  "homepage": "https://github.com/yaon1/nuxt-telegram-auth#readme",
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "telegram",
+    "telegram-login",
+    "telegram-mini-app",
+    "webapp",
+    "auth"
+  ]
 }
