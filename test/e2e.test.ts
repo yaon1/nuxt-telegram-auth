@@ -143,4 +143,14 @@ describe('module e2e', async () => {
     expect(res.status).toBe(302)
     expect(res.headers.get('location')).toBe('/private')
   })
+
+  it('runs defineTelegramAuthHandler only for signed-in users', async () => {
+    expect((await fetch('/api/orders')).status).toBe(401)
+    const login = await fetch(`${api}/login`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(signWidget({ id: 42, first_name: 'Ada', auth_date: now() })),
+    })
+    expect(await $fetch('/api/orders', { headers: { cookie: await cookieFrom(login) } })).toEqual({ owner: 42, orders: [] })
+  })
 })

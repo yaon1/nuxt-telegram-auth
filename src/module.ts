@@ -96,6 +96,7 @@ export default defineNuxtModule<ModuleOptions>({
       { name: 'requireTelegramUser', from: resolve('./runtime/server/utils/session') },
       { name: 'getTelegramUser', from: resolve('./runtime/server/utils/session') },
       { name: 'verifyTelegramLogin', from: resolve('./runtime/server/utils/verify') },
+      { name: 'defineTelegramAuthHandler', from: resolve('./runtime/server/utils/handler') },
       { name: 'verifyWebAppInitData', from: resolve('./runtime/server/utils/webapp') },
     ])
     addImports([
