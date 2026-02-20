@@ -30,7 +30,7 @@ declare global {
  * Access to the Mini App runtime plus one-call sign-in. `webApp` is null outside Telegram
  * (or during SSR), so pages can render a normal login fallback.
  */
-export function useTelegramWebApp() {
+export function useTelegramWebApp(options: { expand?: boolean } = {}) {
   const webApp = ref<TelegramWebApp | null>(null)
   const { login: _login, ...auth } = useTelegramAuth()
 
@@ -40,6 +40,8 @@ export function useTelegramWebApp() {
     if (app && app.initData) {
       webApp.value = app
       app.ready()
+      // Mini Apps open half-height on mobile; most apps want the full viewport.
+      if (options.expand) app.expand()
     }
   })
 
@@ -57,6 +59,7 @@ export function useTelegramWebApp() {
   return {
     webApp,
     haptic,
+    close: () => webApp.value?.close(),
     isMiniApp: computed(() => webApp.value !== null),
     colorScheme: computed(() => webApp.value?.colorScheme ?? null),
     signIn,
