@@ -132,4 +132,15 @@ describe('module e2e', async () => {
     await fetch(`${api}/webapp`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ initData }) })
     expect(await $fetch('/api/last-start')).toEqual({ startParam: 'ref_42' })
   })
+
+  it('sends signed-in users away from the login page', async () => {
+    const login = await fetch(`${api}/login`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(signWidget({ id: 42, first_name: 'Ada', auth_date: now() })),
+    })
+    const res = await fetch('/login?redirect=/private', { redirect: 'manual', headers: { cookie: await cookieFrom(login) } })
+    expect(res.status).toBe(302)
+    expect(res.headers.get('location')).toBe('/private')
+  })
 })

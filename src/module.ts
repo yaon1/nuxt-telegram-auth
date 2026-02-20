@@ -106,6 +106,7 @@ export default defineNuxtModule<ModuleOptions>({
       { name: 'useBackButton', from: resolve('./runtime/composables/useBackButton') },
     ])
     addRouteMiddleware({ name: 'telegram-auth', path: resolve('./runtime/middleware/telegram-auth') })
+    addRouteMiddleware({ name: 'telegram-guest', path: resolve('./runtime/middleware/telegram-guest') })
     addComponent({ name: 'TelegramLoginButton', filePath: resolve('./runtime/components/TelegramLoginButton.vue') })
   },
 })
