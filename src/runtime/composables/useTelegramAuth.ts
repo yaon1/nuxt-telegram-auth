@@ -2,11 +2,27 @@ import { computed } from 'vue'
 import type { TelegramUser } from '../server/utils/verify'
 import { useRequestFetch, useRuntimeConfig, useState } from '#imports'
 
+let channel: BroadcastChannel | null | undefined
+
+/** Shared channel so signing out in one tab signs out the others. */
+function broadcast(): BroadcastChannel | null {
+  if (channel !== undefined) return channel
+  channel = import.meta.client && typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('nuxt-telegram-auth') : null
+  return channel
+}
+
 export function useTelegramAuth() {
   const { apiBase } = useRuntimeConfig().public.telegramAuth
   const user = useState<TelegramUser | null>('telegram-auth:user', () => null)
   const request = useRequestFetch()
   const pending = useState('telegram-auth:pending', () => false)
+  const listening = useState('telegram-auth:listening', () => false)
+  if (import.meta.client && !listening.value) {
+    listening.value = true
+    broadcast()?.addEventListener('message', (e) => {
+      if (e.data === 'logout') user.value = null
+    })
+  }
   const error = useState<string | null>('telegram-auth:error', () => null)
 
   /** Runs an auth request, tracking `pending` and turning failures into a readable `error`. */
@@ -42,6 +58,7 @@ export function useTelegramAuth() {
   async function logout(): Promise<void> {
     await $fetch(`${apiBase}/logout`, { method: 'POST' })
     user.value = null
+    broadcast()?.postMessage('logout')
   }
 
   return { user, loggedIn: computed(() => user.value !== null), pending, error, fetchSession, login, loginWithWebApp, logout }
