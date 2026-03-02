@@ -34,7 +34,6 @@ export async function verifyWebAppInitData(
 
   const fields: Record<string, string> = {}
   for (const [key, value] of params) {
-    // `signature` is for third-party Ed25519 validation and is not part of the HMAC.
     if (key !== 'hash') fields[key] = value
   }
 
@@ -42,6 +41,11 @@ export async function verifyWebAppInitData(
   const signature = toHex(await hmacSha256(secret, dataCheckString(fields)))
   if (!constantTimeEqual(signature, hash.toLowerCase())) return { ok: false, reason: 'signature' }
 
+  return parseInitDataFields(fields, maxAgeSeconds, now)
+}
+
+/** Shared by the HMAC and Ed25519 verifiers once the signature checks out. */
+export function parseInitDataFields(fields: Record<string, string>, maxAgeSeconds: number, now: number): WebAppVerifyResult {
   const authDate = Number(fields.auth_date)
   if (!Number.isFinite(authDate) || now - authDate > maxAgeSeconds) return { ok: false, reason: 'expired' }
 
