@@ -46,4 +46,9 @@ describe('verifyTelegramLogin', () => {
     const result = await verifyTelegramLogin({ ...signed, id: '42', hash: String(signed.hash).toUpperCase() }, TOKEN, 86_400, NOW)
     expect(result.ok && result.user.id).toBe(42)
   })
+
+  it('passes photo_url and last_name through', async () => {
+    const result = await verifyTelegramLogin(sign({ ...base, last_name: 'Lovelace', photo_url: 'https://t.me/i/userpic/320/ada.jpg' }), TOKEN, 86_400, NOW)
+    expect(result.ok && [result.user.last_name, result.user.photo_url]).toEqual(['Lovelace', 'https://t.me/i/userpic/320/ada.jpg'])
+  })
 })
