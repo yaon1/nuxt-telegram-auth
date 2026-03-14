@@ -40,4 +40,10 @@ describe('verifyTelegramLogin', () => {
   it('rejects missing hash', async () => {
     expect(await verifyTelegramLogin(base, TOKEN)).toEqual({ ok: false, reason: 'malformed' })
   })
+
+  it('accepts string ids and uppercase hashes from redirect mode', async () => {
+    const signed = sign({ ...base, id: 42 })
+    const result = await verifyTelegramLogin({ ...signed, id: '42', hash: String(signed.hash).toUpperCase() }, TOKEN, 86_400, NOW)
+    expect(result.ok && result.user.id).toBe(42)
+  })
 })
