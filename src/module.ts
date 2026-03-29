@@ -92,6 +92,10 @@ export default defineNuxtModule<ModuleOptions>({
       addServerHandler({ route: `${options.apiBase}/${route}`, method, handler: resolve(`./runtime/server/api/${route}.${method}`) })
     }
 
+    if (nuxt.options.dev) {
+      addServerHandler({ route: `${options.apiBase}/dev-login`, method: 'post', handler: resolve('./runtime/server/api/dev-login.post') })
+    }
+
     addServerImports([
       { name: 'requireTelegramUser', from: resolve('./runtime/server/utils/session') },
       { name: 'getTelegramUser', from: resolve('./runtime/server/utils/session') },

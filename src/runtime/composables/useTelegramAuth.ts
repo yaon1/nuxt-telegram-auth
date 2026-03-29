@@ -55,11 +55,17 @@ export function useTelegramAuth() {
     return user.value
   }
 
+  /** Dev server only: sign in without Telegram, e.g. `devLogin({ id: 42, first_name: 'Ada' })`. */
+  async function devLogin(fake: { id?: number; first_name?: string; username?: string } = {}): Promise<TelegramUser> {
+    user.value = await $fetch<TelegramUser>(`${apiBase}/dev-login`, { method: 'POST', body: fake })
+    return user.value
+  }
+
   async function logout(): Promise<void> {
     await $fetch(`${apiBase}/logout`, { method: 'POST' })
     user.value = null
     broadcast()?.postMessage('logout')
   }
 
-  return { user, loggedIn: computed(() => user.value !== null), pending, error, fetchSession, login, loginWithWebApp, logout }
+  return { user, loggedIn: computed(() => user.value !== null), pending, error, fetchSession, login, loginWithWebApp, devLogin, logout }
 }

@@ -163,4 +163,9 @@ describe('module e2e', async () => {
     const old = await fetch(`${api}/webapp`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ initData: stale }) })
     expect(old.status).toBe(401)
   })
+
+  it('does not expose dev-login in production builds', async () => {
+    const res = await fetch(`${api}/dev-login`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' })
+    expect(res.status).toBe(404)
+  })
 })
