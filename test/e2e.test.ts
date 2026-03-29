@@ -153,4 +153,14 @@ describe('module e2e', async () => {
     })
     expect(await $fetch('/api/orders', { headers: { cookie: await cookieFrom(login) } })).toEqual({ owner: 42, orders: [] })
   })
+
+  it('rejects Mini App data without a user or past its max age', async () => {
+    const noUser = signWebApp({ auth_date: String(now()), query_id: 'Q' })
+    const res = await fetch(`${api}/webapp`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ initData: noUser }) })
+    expect(res.status).toBe(400)
+
+    const stale = signWebApp({ user: JSON.stringify({ id: 7, first_name: 'Mini' }), auth_date: String(now() - 7200) })
+    const old = await fetch(`${api}/webapp`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ initData: stale }) })
+    expect(old.status).toBe(401)
+  })
 })
