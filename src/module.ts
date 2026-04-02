@@ -10,6 +10,10 @@ import {
 } from '@nuxt/kit'
 import { defu } from 'defu'
 
+export type { TelegramUser } from './runtime/server/utils/verify'
+export type { WebAppInitData, WebAppUser } from './runtime/server/utils/webapp'
+export type { TelegramWebApp } from './runtime/composables/useTelegramWebApp'
+
 export interface ModuleOptions {
   /** Bot token from @BotFather. Prefer NUXT_TELEGRAM_AUTH_BOT_TOKEN. */
   botToken: string
