@@ -32,6 +32,24 @@ export default defineEventHandler(async (event) => {
 })
 ```
 
+## Защита страниц
+
+```vue
+<!-- pages/dashboard.vue -->
+<script setup lang="ts">
+definePageMeta({ middleware: 'telegram-auth' }) // гости уходят на /login?redirect=/dashboard
+</script>
+```
+
+```vue
+<!-- pages/login.vue -->
+<script setup lang="ts">
+definePageMeta({ middleware: 'telegram-guest' }) // вошедших отправляет дальше по ?redirect=
+</script>
+```
+
+Middleware работают и при SSR: защищённая страница не отрендерится на сервере для гостя.
+
 ## Установка
 
 ```bash
