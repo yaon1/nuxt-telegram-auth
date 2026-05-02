@@ -50,6 +50,14 @@ definePageMeta({ middleware: 'telegram-guest' }) // вошедших отпра�
 
 Middleware работают и при SSR: защищённая страница не отрендерится на сервере для гостя.
 
+## Вход через редирект
+
+```vue
+<TelegramLoginButton mode="redirect" redirect-to="/dashboard" />
+```
+
+Telegram перенаправит браузер на `/api/_auth/telegram/callback`, модуль проверит подпись, создаст сессию и вернёт пользователя на `redirect-to`. Принимаются только относительные пути, поэтому через параметр нельзя увести пользователя на чужой сайт.
+
 ## Установка
 
 ```bash
