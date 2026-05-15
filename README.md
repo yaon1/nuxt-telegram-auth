@@ -58,6 +58,26 @@ Middleware работают и при SSR: защищённая страница
 
 Telegram перенаправит браузер на `/api/_auth/telegram/callback`, модуль проверит подпись, создаст сессию и вернёт пользователя на `redirect-to`. Принимаются только относительные пути, поэтому через параметр нельзя увести пользователя на чужой сайт.
 
+## Telegram Mini Apps
+
+```ts
+// nuxt.config.ts
+telegramAuth: { botUsername: 'my_bot', webApp: true, cookie: { name: 'tg', sameSite: 'none' } }
+```
+
+```vue
+<script setup lang="ts">
+const { isMiniApp, signIn, user, haptic } = useTelegramWebApp({ expand: true })
+useWebAppTheme() // --tg-bg-color, --tg-text-color, --tg-button-color …
+useMainButton('Оформить заказ', checkout, cartNotEmpty)
+useBackButton(() => router.back())
+
+onMounted(() => isMiniApp.value && signIn())
+</script>
+```
+
+`signIn()` отправляет `initData` на сервер, где проверяется HMAC-подпись, и создаёт ту же cookie-сессию, что и Login Widget. Поэтому `requireTelegramUser` одинаково работает для сайта и Mini App. Mini App открывается во фрейме Telegram, поэтому cookie нужен `SameSite=None`.
+
 ## Установка
 
 ```bash
