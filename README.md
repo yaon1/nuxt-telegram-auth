@@ -78,6 +78,17 @@ onMounted(() => isMiniApp.value && signIn())
 
 `signIn()` отправляет `initData` на сервер, где проверяется HMAC-подпись, и создаёт ту же cookie-сессию, что и Login Widget. Поэтому `requireTelegramUser` одинаково работает для сайта и Mini App. Mini App открывается во фрейме Telegram, поэтому cookie нужен `SameSite=None`.
 
+## Проверка без токена бота
+
+Если данные Mini App проверяет другой сервис, у которого нет токена бота, используйте Ed25519-подпись:
+
+```ts
+const result = await verifyWebAppSignature(initData, 7342037359 /* id бота */)
+if (result.ok) console.log(result.data.user)
+```
+
+Публичный ключ Telegram уже встроен; для тестового окружения передайте `{ publicKeyHex }`.
+
 ## Установка
 
 ```bash
