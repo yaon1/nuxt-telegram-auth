@@ -89,6 +89,14 @@ if (result.ok) console.log(result.data.user)
 
 Публичный ключ Telegram уже встроен; для тестового окружения передайте `{ publicKeyHex }`.
 
+## Только свои
+
+```ts
+telegramAuth: { allowedUsers: [123456789, '@lead_dev', 'ops_bot_admin'] }
+```
+
+Остальные получат 403 ещё до создания сессии. Удобно для админок и внутренних инструментов.
+
 ## Установка
 
 ```bash
