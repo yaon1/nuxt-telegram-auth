@@ -97,6 +97,21 @@ telegramAuth: { allowedUsers: [123456789, '@lead_dev', 'ops_bot_admin'] }
 
 Остальные получат 403 ещё до создания сессии. Удобно для админок и внутренних инструментов.
 
+## Хуки: пользователи в своей БД
+
+```ts
+// server/plugins/users.ts
+export default defineNitroPlugin((nitro) => {
+  nitro.hooks.hook('telegram-auth:login', async ({ user, startParam }) => {
+    if (await db.bans.has(user.id)) throw createError({ statusCode: 403, statusMessage: 'Banned' }) // вето
+    await db.users.upsert({ id: user.id, name: user.first_name, referral: startParam })
+  })
+  nitro.hooks.hook('telegram-auth:logout', ({ user }) => audit.log('logout', user.id))
+})
+```
+
+`startParam` — это параметр из диплинка `t.me/my_bot/app?startapp=ref_42`, удобно для реферальных кодов.
+
 ## Установка
 
 ```bash
