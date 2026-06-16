@@ -123,6 +123,17 @@ export default defineTelegramAuthHandler(async (event, user) => {
 
 Также доступны `requireTelegramUser(event)`, `getTelegramUser(event)`, `verifyTelegramLogin()`, `verifyWebAppInitData()` и `verifyWebAppSignature()`.
 
+## Локальная разработка без Telegram
+
+Виджет не работает на `localhost`, поэтому в dev-режиме есть вход без Telegram:
+
+```ts
+const { devLogin } = useTelegramAuth()
+await devLogin({ id: 42, first_name: 'Ada' })
+```
+
+Маршрут `/api/_auth/telegram/dev-login` регистрируется только в `nuxi dev` и отсутствует в продакшен-сборке.
+
 ## Установка
 
 ```bash
