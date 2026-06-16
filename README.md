@@ -112,6 +112,17 @@ export default defineNitroPlugin((nitro) => {
 
 `startParam` — это параметр из диплинка `t.me/my_bot/app?startapp=ref_42`, удобно для реферальных кодов.
 
+## Серверные обработчики
+
+```ts
+// server/api/orders.get.ts
+export default defineTelegramAuthHandler(async (event, user) => {
+  return db.orders.findMany({ where: { userId: user.id } }) // гость получит 401
+})
+```
+
+Также доступны `requireTelegramUser(event)`, `getTelegramUser(event)`, `verifyTelegramLogin()`, `verifyWebAppInitData()` и `verifyWebAppSignature()`.
+
 ## Установка
 
 ```bash
