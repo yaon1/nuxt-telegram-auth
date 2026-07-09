@@ -192,6 +192,16 @@ wrangler pages secret put NUXT_TELEGRAM_AUTH_BOT_TOKEN
 wrangler pages secret put NUXT_TELEGRAM_AUTH_SESSION_PASSWORD
 ```
 
+## Если что-то не так
+
+| Симптом | Решение |
+|---|---|
+| Кнопка не появляется, в консоли «Bot domain invalid» | В @BotFather выполните `/setdomain` для текущего домена |
+| На localhost кнопки нет | Это ограничение Telegram; используйте `devLogin()` или туннель (ngrok, cloudflared) |
+| В Mini App сессия не сохраняется | Задайте `cookie: { sameSite: 'none' }` и откройте приложение по HTTPS |
+| 401 `Telegram login expired` | Часы сервера расходятся; проверьте NTP или увеличьте `authMaxAge` |
+| 403 `Cross-origin request rejected` | Запрос пришёл с другого домена; вызывайте API с того же origin |
+
 ## Разработка
 
 ```bash
