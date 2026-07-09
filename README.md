@@ -172,6 +172,16 @@ NUXT_TELEGRAM_AUTH_SESSION_PASSWORD=случайная-строка-миниму
 | `cookie` | `{ name: 'nuxt-telegram-auth', sameSite: 'lax' }` | Имя, домен, SameSite и Secure для cookie |
 | `apiBase` | `/api/_auth/telegram` | Префикс маршрутов `login`, `webapp`, `callback`, `session`, `logout` |
 
+## Безопасность
+
+| Угроза | Что делает модуль |
+|---|---|
+| Подделка данных пользователя | HMAC-SHA256 подпись Telegram проверяется на сервере, сравнение за константное время |
+| Повтор старых данных | `auth_date` не старше `authMaxAge` / `webAppMaxAge` |
+| Login CSRF | POST-маршруты отклоняют чужой `Origin` |
+| Open redirect | `redirect` принимает только относительные пути |
+| Кража сессии через JS | cookie `httpOnly`, `Secure` в продакшене, содержимое зашифровано |
+
 ## Разработка
 
 ```bash
