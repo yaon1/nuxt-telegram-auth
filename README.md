@@ -182,6 +182,16 @@ NUXT_TELEGRAM_AUTH_SESSION_PASSWORD=случайная-строка-миниму
 | Open redirect | `redirect` принимает только относительные пути |
 | Кража сессии через JS | cookie `httpOnly`, `Secure` в продакшене, содержимое зашифровано |
 
+## Деплой
+
+Модуль использует только Web Crypto и `h3`, поэтому работает на любом пресете Nitro: Node, Bun, Deno, Cloudflare Workers/Pages, Vercel и Netlify Edge.
+
+```bash
+NITRO_PRESET=cloudflare_pages nuxi build
+wrangler pages secret put NUXT_TELEGRAM_AUTH_BOT_TOKEN
+wrangler pages secret put NUXT_TELEGRAM_AUTH_SESSION_PASSWORD
+```
+
 ## Разработка
 
 ```bash
