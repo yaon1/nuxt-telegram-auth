@@ -6,7 +6,7 @@ import { parseInitDataFields } from './webapp'
 export const TELEGRAM_PUBLIC_KEY = 'e7bf03a2fa4602af4580703d88dda5bb59f32ed8b02a56c187fe7d34caed242d'
 
 function fromHex(hex: string): Uint8Array {
-  return new Uint8Array(hex.match(/../g)!.map((b) => parseInt(b, 16)))
+  return new Uint8Array(hex.match(/../g)!.map((b) => Number.parseInt(b, 16)))
 }
 
 function fromBase64Url(value: string): Uint8Array {
@@ -32,7 +32,7 @@ export async function verifyWebAppSignature(
   for (const [key, value] of params) if (key !== 'hash' && key !== 'signature') fields[key] = value
   const message = `${botId}:WebAppData\n${dataCheckString(fields)}`
 
-  let valid = false
+  let valid: boolean
   try {
     const key = await crypto.subtle.importKey('raw', fromHex(options.publicKeyHex ?? TELEGRAM_PUBLIC_KEY), { name: 'Ed25519' }, false, ['verify'])
     valid = await crypto.subtle.verify('Ed25519', key, fromBase64Url(signature), new TextEncoder().encode(message))
