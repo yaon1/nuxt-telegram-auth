@@ -202,6 +202,12 @@ wrangler pages secret put NUXT_TELEGRAM_AUTH_SESSION_PASSWORD
 | 401 `Telegram login expired` | Часы сервера расходятся; проверьте NTP или увеличьте `authMaxAge` |
 | 403 `Cross-origin request rejected` | Запрос пришёл с другого домена; вызывайте API с того же origin |
 
+## Примеры
+
+- [`examples/admin-allowlist`](examples/admin-allowlist) — закрытая админка на allow-list.
+- [`examples/mini-app-shop`](examples/mini-app-shop) — магазин в Mini App: тема, MainButton, рефералы.
+- [`playground`](playground) — все возможности на одной площадке.
+
 ## Разработка
 
 ```bash
