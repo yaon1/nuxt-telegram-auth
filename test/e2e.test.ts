@@ -9,6 +9,14 @@ async function cookieFrom(response: Response): Promise<string> {
   return (response.headers.get('set-cookie') ?? '').split(';')[0]!
 }
 
+async function signIn(fields: Record<string, string | number>): Promise<Response> {
+  return fetch(`${api}/login`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(signWidget(fields)),
+  })
+}
+
 describe('module e2e', async () => {
   await setup({ rootDir: fileURLToPath(new URL('./fixtures/basic', import.meta.url)) })
 
@@ -18,11 +26,7 @@ describe('module e2e', async () => {
   })
 
   it('logs in with widget data and reads the session', async () => {
-    const res = await fetch(`${api}/login`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(signWidget({ id: 42, first_name: 'Ada', auth_date: now() })),
-    })
+    const res = await signIn({ id: 42, first_name: 'Ada', auth_date: now() })
     expect(res.status).toBe(200)
     const cookie = await cookieFrom(res)
     expect(await $fetch('/api/me', { headers: { cookie } })).toEqual({ id: 42 })
@@ -40,18 +44,10 @@ describe('module e2e', async () => {
   })
 
   it('blocks users outside the allow-list', async () => {
-    const res = await fetch(`${api}/login`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(signWidget({ id: 999, first_name: 'Mallory', username: 'mallory', auth_date: now() })),
-    })
+    const res = await signIn({ id: 999, first_name: 'Mallory', username: 'mallory', auth_date: now() })
     expect(res.status).toBe(403)
 
-    const byName = await fetch(`${api}/login`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(signWidget({ id: 1000, first_name: 'Ada', username: 'ADA', auth_date: now() })),
-    })
+    const byName = await signIn({ id: 1000, first_name: 'Ada', username: 'ADA', auth_date: now() })
     expect(byName.status).toBe(200)
   })
 
@@ -87,21 +83,13 @@ describe('module e2e', async () => {
   })
 
   it('renders protected pages for signed-in users', async () => {
-    const login = await fetch(`${api}/login`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(signWidget({ id: 42, first_name: 'Ada', auth_date: now() })),
-    })
+    const login = await signIn({ id: 42, first_name: 'Ada', auth_date: now() })
     const html = await $fetch<string>('/private', { headers: { cookie: await cookieFrom(login) } })
     expect(html).toContain('private Ada')
   })
 
   it('logs out', async () => {
-    const login = await fetch(`${api}/login`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(signWidget({ id: 42, first_name: 'Ada', auth_date: now() })),
-    })
+    const login = await signIn({ id: 42, first_name: 'Ada', auth_date: now() })
     const cookie = await cookieFrom(login)
     const out = await fetch(`${api}/logout`, { method: 'POST', headers: { cookie } })
     const cleared = await cookieFrom(out)
@@ -109,11 +97,7 @@ describe('module e2e', async () => {
   })
 
   it('lets a login hook veto the sign-in', async () => {
-    const res = await fetch(`${api}/login`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(signWidget({ id: 13, first_name: 'Bob', username: 'banned', auth_date: now() })),
-    })
+    const res = await signIn({ id: 13, first_name: 'Bob', username: 'banned', auth_date: now() })
     expect(res.status).toBe(403)
     expect(res.headers.get('set-cookie')).toBeNull()
   })
@@ -134,11 +118,7 @@ describe('module e2e', async () => {
   })
 
   it('sends signed-in users away from the login page', async () => {
-    const login = await fetch(`${api}/login`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(signWidget({ id: 42, first_name: 'Ada', auth_date: now() })),
-    })
+    const login = await signIn({ id: 42, first_name: 'Ada', auth_date: now() })
     const res = await fetch('/login?redirect=/private', { redirect: 'manual', headers: { cookie: await cookieFrom(login) } })
     expect(res.status).toBe(302)
     expect(res.headers.get('location')).toBe('/private')
@@ -146,21 +126,25 @@ describe('module e2e', async () => {
 
   it('runs defineTelegramAuthHandler only for signed-in users', async () => {
     expect((await fetch('/api/orders')).status).toBe(401)
-    const login = await fetch(`${api}/login`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(signWidget({ id: 42, first_name: 'Ada', auth_date: now() })),
-    })
+    const login = await signIn({ id: 42, first_name: 'Ada', auth_date: now() })
     expect(await $fetch('/api/orders', { headers: { cookie: await cookieFrom(login) } })).toEqual({ owner: 42, orders: [] })
   })
 
   it('rejects Mini App data without a user or past its max age', async () => {
     const noUser = signWebApp({ auth_date: String(now()), query_id: 'Q' })
-    const res = await fetch(`${api}/webapp`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ initData: noUser }) })
+    const res = await fetch(`${api}/webapp`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ initData: noUser }),
+    })
     expect(res.status).toBe(400)
 
     const stale = signWebApp({ user: JSON.stringify({ id: 7, first_name: 'Mini' }), auth_date: String(now() - 7200) })
-    const old = await fetch(`${api}/webapp`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ initData: stale }) })
+    const old = await fetch(`${api}/webapp`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ initData: stale }),
+    })
     expect(old.status).toBe(401)
   })
 
