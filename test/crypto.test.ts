@@ -1,6 +1,6 @@
-import { createHmac } from 'node:crypto'
+import { createHash, createHmac } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
-import { constantTimeEqual, dataCheckString, hmacSha256, toHex } from '../src/runtime/server/utils/crypto'
+import { constantTimeEqual, dataCheckString, hmacSha256, sha256, toHex } from '../src/runtime/server/utils/crypto'
 
 describe('crypto helpers', () => {
   it('builds the sorted data-check string and skips empty values', () => {
@@ -16,5 +16,9 @@ describe('crypto helpers', () => {
     expect(constantTimeEqual('abc', 'abc')).toBe(true)
     expect(constantTimeEqual('abc', 'abd')).toBe(false)
     expect(constantTimeEqual('abc', 'ab')).toBe(false)
+  })
+
+  it('matches node:crypto SHA-256', async () => {
+    expect(toHex(await sha256('123:token'))).toBe(createHash('sha256').update('123:token').digest('hex'))
   })
 })
