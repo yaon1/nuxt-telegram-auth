@@ -152,4 +152,8 @@ describe('module e2e', async () => {
     const res = await fetch(`${api}/dev-login`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' })
     expect(res.status).toBe(404)
   })
+
+  it('reports no user for guests', async () => {
+    expect(await $fetch(`${api}/session`)).toEqual({ user: null })
+  })
 })
