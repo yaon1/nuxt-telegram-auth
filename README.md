@@ -214,8 +214,10 @@ wrangler pages secret put NUXT_TELEGRAM_AUTH_SESSION_PASSWORD
 npm i
 cp playground/.env.example playground/.env
 npm run dev:prepare
-npm run dev
-npm test
+npm run dev          # playground
+npm test             # unit + e2e на fixture-приложении
+npm run lint
+npm run typecheck
 ```
 
 ## Лицензия
