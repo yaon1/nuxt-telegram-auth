@@ -121,6 +121,8 @@ export default defineTelegramAuthHandler(async (event, user) => {
 })
 ```
 
+Для выхода есть готовый компонент `<TelegramLogoutButton to="/" />`.
+
 Также доступны `requireTelegramUser(event)`, `getTelegramUser(event)`, `verifyTelegramLogin()`, `verifyWebAppInitData()` и `verifyWebAppSignature()`.
 
 ## Локальная разработка без Telegram
