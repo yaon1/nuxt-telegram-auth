@@ -30,17 +30,17 @@
   "devDependencies": {
     "@nuxt/eslint-config": "^1.17.0",
     "@nuxt/module-builder": "^1.0.3",
-    "@nuxt/schema": "^4.6.2",
+    "@nuxt/schema": "^4.6.3",
     "@nuxt/test-utils": "^4.3.4",
     "@vue/test-utils": "^2.5.1",
-    "eslint": "^9.39.5",
+    "eslint": "^10.14.0",
     "eslint-config-prettier": "^10.1.8",
-    "happy-dom": "^21.0.3",
-    "nuxt": "^4.5.2",
+    "happy-dom": "^21.0.4",
+    "nuxt": "^4.6.3",
     "prettier": "^3.9.10",
-    "typescript": "^5.9.3",
-    "vitest": "^4.1.12",
-    "vue-tsc": "^3.3.13"
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5",
+    "vue-tsc": "^3.3.14"
   },
   "repository": {
     "type": "git",
